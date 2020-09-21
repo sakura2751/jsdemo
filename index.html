@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>16.4.三大家族-scroll-侧边广告动画回位</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .parent{
+            height: 4000px;
+            background-color: #5c5c5b;
+        }
+        img{
+            display: block;
+            height: 300px;
+            position: absolute;
+            top: 300px;
+            left: 0;
+            width: 300px;
+            background-color: #ff4400;
+        }
+    </style>
+</head>
+<body>
+<div class="parent">
+    <img src="" alt="">
+</div>
+<script src="js/MyTools.js"></script>
+<script>
+    window.addEventListener("load", function () {
+//
+            //    1.获取img的top
+            var img = document.getElementsByTagName('img')[0];
+            var imgTop = img.offsetTop;
+
+    //        2.开启滚动事件
+        var timerId = null, begin = 0, end = 0;
+        window.addEventListener("scroll", function () {
+        //    5.清除定时器
+            clearInterval(timerId);
+            //  3.获取卷去的高度       ***
+            var scrollTop = MyTools.scroll().top;
+            end = imgTop + scrollTop;
+
+            //    4.开启定时器
+                timerId = setInterval(function () {
+                    begin += (end - begin) * 0.2;
+                    img.style.top =  begin + 'px';
+                    //  6.判断
+                    if (Math.round(begin) === end){
+                        clearInterval(timerId);
+                    }
+                },20);
+            // console.log(begin, end,scrollTop);
+
+
+        });
+
+    });
+
+
+
+
+</script>
+</body>
+</html>
