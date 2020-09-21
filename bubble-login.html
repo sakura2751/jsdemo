@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>17.1.冒泡事件-蒙版登录</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        /*撑出高度，适配各种浏览器  **  */
+        html,body{
+            width: 100%;
+            height: 3000px;
+        }
+        #masking{
+            height: 100%;
+            width: 100%;
+            background-color: #5c5c5b;
+            opacity: 0.5;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: none;
+        }
+
+        #log_in{
+            width: 300px;
+            height: 300px;
+            background-color: cornflowerblue;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-150px,-150px);
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<button id="btn">登录</button>
+<div id="masking"></div>
+<div id="log_in"></div>
+
+<script src="js/MyTools.js"></script>
+<script>
+    window.addEventListener("load", function () {
+    //    点击事件  出现蒙版登录
+        MyTools.$('btn').addEventListener("click", function () {
+            //阻止冒泡      ***
+            if (event && event.stopPropagation()){
+                event.stopPropagation();
+            }else {
+                event.cancelBubble = true;
+            }
+            //  显示登录蒙版
+            MyTools.$('masking').style.display = 'block';
+            MyTools.$('log_in').style.display = 'block';
+        //    隐藏滚动条  **
+            document.body.style.overflow = 'hidden';
+        });
+        //    点击事件
+        document.addEventListener("click", function (ev) {
+            var e = ev || window.event;
+            //  获取目标id
+            var targetId = e.target ? e.target.id : e.srcElement;
+            // 登录box操作
+            if (targetId !== 'log_in'){
+                MyTools.$('masking').style.display = 'none';
+                MyTools.$('log_in').style.display = 'none';
+                //    隐藏滚动条  **
+                document.body.style.overflow = 'auto';
+            }else {
+                window.location.href = 'http://www.baidu.com/';
+            }
+        });
+    });
+</script>
+</body>
+</html>
