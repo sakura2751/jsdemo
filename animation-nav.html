@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>16.2-三大家族-offset-缓动动画导航条</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-color: pink;
+        }
+        nav{
+            width: 500px;
+            height: 50px;
+            background-color: white;
+            margin: 300px auto;
+            position: relative;
+            border-radius: 10px;
+        }
+        nav ul{
+            /*  1.使背景色向后，字体浮在最顶上
+               2.offset的父盒子要有定位     **  */
+            position: relative;
+        }
+
+        li{
+            list-style: none;
+            float: left;
+            text-align: center;
+            width: 100px;
+            line-height: 50px;
+            cursor: pointer;
+        }
+        #logo{
+            position: absolute;
+            background: pink;
+            width: 70px;
+            height: 30px;
+            top: 10px;
+            left: 15px;
+            border-radius: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+<nav>
+    <span id="logo"></span>
+    <ul>
+        <li>双11狂欢</li>
+        <li>服饰会场</li>
+        <li>数码家电</li>
+        <li>进口会场</li>
+        <li>美妆会场</li>
+    </ul>
+</nav>
+<script src="js/MyTools.js"></script>
+<script>
+    window.addEventListener("load", function (ev) {
+    //    获取li标签
+        var li = document.getElementsByTagName('li');
+
+        var begin = 0,end = 15,temp = 15;
+        //  遍历li标签
+        for (var i = 0; i < li.length; i++){
+            var everyLi = li[i];
+            //    监听鼠标进入事件
+            everyLi.addEventListener('mouseover',function () {
+                end = this.offsetLeft + 15;
+            })
+
+        //    监听鼠标按下事件      **
+            everyLi.addEventListener('mousedown',function () {
+                temp = this.offsetLeft + 15;
+            })
+
+        //    监听鼠标离开事件      **
+            everyLi.addEventListener('mouseout',function () {
+                end = temp;
+            })
+
+
+        }
+        setInterval(function () {
+            //缓动公式：
+            // ** 起始值 += （结束值 - 起始值）* 缓动系数（0-1），一般取 0.2
+            begin += (end - begin) * 0.2;
+            MyTools.$('logo').style.left = begin + 'px';
+        },20)
+
+    })
+
+</script>
+</body>
+</html>
