@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>19.2.楼层页面效果</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .box{
+            position: relative;
+        }
+        ul{
+            list-style: none;
+            position: fixed;
+            top: 250px;
+            left: 20px;
+        }
+        ul li{
+            line-height: 30px;
+            width: 60px;
+            color: #e7e4e4;
+            background-color: #3B99FC;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #eee;
+            box-sizing: border-box;
+        }
+        .flit{
+            width: 1200px;
+            height: 2000px;
+            background-color: #5c5c5b;
+            margin: 0 auto;
+        }
+        .floor_box .floor{
+            width: 1200px;
+            height: 800px;
+            background-color: #3B99FC;
+            margin: 0 auto;
+            border: 2px solid #aaa;
+            box-sizing: border-box;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <ul>
+        <li>第1层</li>
+        <li>第2层</li>
+        <li>第3层</li>
+        <li>第4层</li>
+        <li>第5层</li>
+    </ul>
+    <div class="flit"></div>
+    <div class="floor_box">
+        <div class="floor">第1层</div>
+        <div class="floor">第2层</div>
+        <div class="floor">第3层</div>
+        <div class="floor">第4层</div>
+        <div class="floor">第5层</div>
+    </div>
+</div>
+<script src="js/MyTools.js"></script>
+<script>
+    (function () {
+    //    获取标签
+        var li = document.getElementsByTagName('li');
+        var  floor = document.getElementsByClassName('floor');
+    //    触发滚动事件
+        var scrollTop,flag = false;
+        window.addEventListener("scroll", function () {
+            //flag控制点击时不进入该滚动事件     ***
+            if (!flag){
+                setTimeout(function () {
+                    scrollTop = parseInt(MyTools.scroll().top);
+                },20);
+                for (var i = 0; i < floor.length; i++) {
+                    var offTop = floor[i].offsetTop;
+                    if (scrollTop >= offTop){
+                        //    排他
+                        out(li[i]);
+                    }else {
+                        li[i].style.backgroundColor = '#3B99FC';
+                    }
+                }
+            }
+        });
+    //    点击li事件
+        for (var i = 0; i < li.length; i++) {
+            (function (i) {
+                li[i].addEventListener("click", function () {
+                    flag = true;
+                    //排他
+                    out(this);
+                    //缓动动画  ****
+                    MyTools.slowAnimation(document.documentElement,30,{'scrollTop':floor[i].offsetTop},function () {
+                        flag = false;
+                    });
+                });
+            })(i)
+        }
+    //    排他函数
+        function out(i) {
+            for (var j = 0; j < li.length; j++) {
+                li[j].style.backgroundColor = '#3B99FC';
+            }
+            i.style.backgroundColor = 'red';
+        }
+    })()
+</script>
+</body>
+</html>
