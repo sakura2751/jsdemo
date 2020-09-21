@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>16.1.三大家族-offset-放大镜</title>
+    <style>
+        body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, dialog, figure, footer, header, hgroup, nav, section{
+            margin: 0;
+            padding: 0;
+            font-family: "微软雅黑";
+            color: #000000;
+            line-height: 1.5;
+        }
+        li{
+            list-style: none;
+        }
+        #box{
+            width: 300px;
+            height: 300px;
+            margin: 100px 100px 20px;
+            border: 1px solid #cccccc;
+            position: relative;
+        }
+        #box #small_box{
+            position: relative;
+        }
+        #box #small_box img{
+            width: 300px;
+            height: 300px;
+        }
+        #box #small_box #mask{
+            width: 80px;
+            height:80px;
+            background-color: #e7d3ac;
+            opacity: 0.5;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+        #big_box{
+            width: 600px;
+            height: 600px;
+            border: 1px solid #cccccc;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 320px;
+            display: none;
+        }
+        ul{
+            margin-left: 100px;
+        }
+        ul li{
+            float: left;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        .selected{
+            border: 1px solid #cccccc;
+        }
+
+
+    </style>
+
+</head>
+<body>
+<div id="box">
+    <div id="small_box">
+        <img src="img/middle0.jpg" alt="">
+        <div id="mask"></div>
+    </div>
+    <div id="big_box">
+        <img src="img/big0.jpg" alt="">
+    </div>
+</div>
+<div>
+    <ul>
+        <li class="selected"><img  src="img/small0.jpg" alt=""></li>
+        <li><img src="img/small1.jpg" alt=""></li>
+        <li><img src="img/small2.jpg" alt=""></li>
+    </ul>
+</div>
+
+<script>
+
+    window.addEventListener("load", function (ev) {
+        var smallBox = $('small_box');
+        var mark = $('mask');
+        var bigBox = $('big_box');
+        var box = $('box');
+        var img = bigBox.getElementsByTagName('img')[0];
+    //    监听鼠标移动到小盒子事件
+        smallBox.addEventListener("mouseover", function (ev1) {
+            mark.style.display = 'block';
+            bigBox.style.display = 'block';
+            this.style.cursor = 'move';
+            //获取事件对象
+            var e = ev1 || window.event;
+            //操作mask
+            var markLevel,markPerpendicular;
+            markLevel = e.pageX - box.offsetLeft - mark.offsetWidth * 0.5;
+            markPerpendicular = e.pageY - box.offsetTop - mark.offsetHeight * 0.5;
+        //    mask 超出判断  （碰撞检测）**
+            if (markLevel < 0){
+                markLevel = 0;
+            }else if (markLevel > box.offsetWidth - mark.offsetWidth - 2){
+                markLevel = box.offsetWidth - mark.offsetWidth - 2;
+            }
+            //if else if 一定要同一个属性放一起，不然会出错。****
+            if (markPerpendicular < 0){
+                markPerpendicular = 0;
+            }else if (markPerpendicular > box.offsetHeight - mark.offsetHeight - 2){
+                markPerpendicular = box.offsetHeight - mark.offsetHeight - 2;
+            }
+        //    赋值    *
+            mark.style.left = markLevel + 'px';
+            mark.style.top = markPerpendicular + 'px';
+        //    操作大盒子
+        //    小盒子与大盒子比例     **
+            var bigBoxWid,bigBoxHei;
+            bigBoxWid = 6 / 3 * markLevel;
+            bigBoxHei = 6 / 3 * markPerpendicular;
+            img.style.marginLeft = - bigBoxWid + 'px';
+            img.style.marginTop = - bigBoxHei + 'px';
+        });
+    //    监听鼠标离开小盒子事件
+        smallBox.addEventListener("mouseout", function (ev1) {
+            mark.style.display = 'none';
+            bigBox.style.display = 'none';
+        });
+    });
+    //    监听li的鼠标进入事件
+    var ul = document.getElementsByTagName('ul')[0];
+    var li = ul.getElementsByTagName('li');
+    var imgLi = ul.getElementsByTagName('img');
+    for (var i = 0;i < imgLi.length; i++){
+        var everyImg = imgLi[i];
+        //  闭包方式    **
+        (function(i){
+            everyImg.addEventListener('mouseover',function () {
+                var parent = this.parentNode;
+                //排他
+                for (var j = 0; j < imgLi.length; j++){
+                    li[j].setAttribute('class','');
+                }
+                parent.setAttribute('class','selected');
+
+                smallBox.children[0].src = 'img/middle' + i + '.jpg';
+                bigBox.children[0].src = 'img/big' + i + '.jpg';
+            });
+        })(i);
+    }
+    function $(id) {
+        return typeof id === "string" ? document.getElementById(id) : null;
+    }
+</script>
+
+</body>
+</html>
